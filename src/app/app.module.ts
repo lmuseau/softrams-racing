@@ -28,6 +28,10 @@ const ROUTES = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'memberDetails',
+    component: MemberDetailsComponent
   }
 ];
 

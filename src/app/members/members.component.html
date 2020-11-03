@@ -1,25 +1,106 @@
 <div class="container-fluid">
-  <button id="addMemberButton" class="btn btn-primary pull-right" (click)="goToAddMemberForm()">Add Member</button>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Member ID</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Job Title</th>
-        <th>Racing Team</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor='let member of members'>
-        <td>{{member?.id}}</td>
-        <td>{{member?.firstName}}</td>
-        <td>{{member?.lastName}}</td>
-        <td>{{member?.jobTitle}}</td>
-        <td>{{member?.team}}</td>
-        <td>{{member?.status}}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div *ngIf="!isEdit">
+    <button id="addMemberButton" class="btn btn-primary pull-right" (click)="goToAddMemberForm()">Add Member</button>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Member ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Job Title</th>
+          <th>Racing Team</th>
+          <th>Status</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor='let member of members; let i = index'>
+          <td>{{i + 1}}</td>
+          <td>{{member?.firstName}}</td>
+          <td>{{member?.lastName}}</td>
+          <td>{{member?.jobTitle}}</td>
+          <td>{{member?.team}}</td>
+          <td>{{member?.status}}</td>
+          <td><button type="button" class="btn btn-sm btn-info" (click)="editMemberByID(member, member.id)">Edit</button></td>
+          <td><button type="button" class="btn btn-sm btn-danger" (click)="deleteMemberById(member.id)">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="hasDeleted" class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Done!</h4>
+    <p>You have sucessfully removed this member.</p>
+  </div>
+
+  <!-- Used the same form from the member details page here -->
+  <div *ngIf="isEdit" class="container-fluid col-md-6">
+    <h3 class="text-center lead">Edit {{member.firstName}} {{member.lastName}}'s Information</h3>
+    <br />
+    <!--Template Driven Form or Model Driven Form?-->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div>
+        <div class="row">
+          <div class="col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              formControlName="firstName"
+              [(ngModel)]="member.firstName"
+              placeholder="First Name"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              formControlName="lastName"
+              [(ngModel)]="member.lastName"
+              placeholder="Last Name"
+              required
+            />
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              id="jobTitle"
+              formControlName="jobTitle"
+              [(ngModel)]="member.jobTitle"
+              placeholder="Job Title"
+              required
+            />
+          </div>
+          <!--We may have to make a service call to get this list-->
+          <select id="team" formControlName="team" [(ngModel)]="member.team" class="col-md-6 custom-select" required>
+            <option *ngFor="let team of teams" [(ngValue)]="team.teamName">{{ team.teamName }}</option>
+          </select>
+        </div>
+        <br />
+        <div class="form-group col-md-6">
+          <div class="row">
+            <label id="activeStatus" class="md-check lead">
+              <input type="radio" value="Active" formControlName="status" [(ngModel)]="member.status" name="status" required /> Active
+            </label>
+            <label class="md-check lead">
+              <input type="radio" value="Inactive" formControlName="status" [(ngModel)]="member.status" name="status" required /> Inactive
+            </label>
+          </div>
+        </div>
+      </div>
+      <!--Disable if form is invalid-->
+      <button (click)="close()" class="btn btn-secondary">Cancel</button>
+      <button [disabled]="form.invalid" type="submit" class="btn btn-primary pull-right">
+        Save Member
+      </button>
+    </form>
+  </div>
+  
 </div>

@@ -2,7 +2,7 @@
   <h3 class="text-center lead">Add Member to Racing Team</h3>
   <br />
   <!--Template Driven Form or Model Driven Form?-->
-  <form (ngSubmit)="onSubmit(memberForm)">
+  <form [formGroup]="form" (ngSubmit)="onSubmit(form)">
     <div>
       <div class="row">
         <div class="col-md-6">
@@ -10,7 +10,9 @@
             type="text"
             class="form-control"
             id="firstName"
+            formControlName="firstName"
             placeholder="First Name"
+            required
           />
         </div>
         <div class="col-md-6">
@@ -18,7 +20,9 @@
             type="text"
             class="form-control"
             id="lastName"
+            formControlName="lastName"
             placeholder="Last Name"
+            required
           />
         </div>
       </div>
@@ -29,11 +33,13 @@
             type="text"
             class="form-control"
             id="jobTitle"
+            formControlName="jobTitle"
             placeholder="Job Title"
+            required
           />
         </div>
         <!--We may have to make a service call to get this list-->
-        <select id="team" class="col-md-6 custom-select">
+        <select id="team" formControlName="team" class="col-md-6 custom-select" required>
           <option *ngFor="let team of teams">{{ team.teamName }}</option>
         </select>
       </div>
@@ -41,16 +47,17 @@
       <div class="form-group col-md-6">
         <div class="row">
           <label id="activeStatus" class="md-check lead">
-            <input type="radio" value="Active" name="status" /> Active
+            <input type="radio" value="Active" formControlName="status" name="status" required /> Active
           </label>
           <label class="md-check lead">
-            <input type="radio" value="Inactive" name="status" /> Inactive
+            <input type="radio" value="Inactive" formControlName="status" name="status" required /> Inactive
           </label>
         </div>
       </div>
     </div>
     <!--Disable if form is invalid-->
-    <button type="submit" class="btn btn-primary pull-right">
+    <button (click)="cancel()" class="btn btn-secondary">Go Back</button>
+    <button [disabled]="form.invalid" type="submit" class="btn btn-primary pull-right">
       Save Member
     </button>
   </form>
